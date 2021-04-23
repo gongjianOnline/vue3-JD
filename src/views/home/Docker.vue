@@ -1,42 +1,31 @@
 <template>
   <div class="docker">
-    <span class="docker__item docker__item--active">
+    <span v-for="(item,index) in dockerList" :key="index"
+    class="docker__item"
+    :class="{'docker__item--active':index === 0? true : false}">
       <div>
         <svg class="icon" aria-hidden="true">
-          <use xlink:href="#iconhome"></use>
+          <use :xlink:href="item.icon"></use>
         </svg>
       </div>
-      <div class="docker_title">首页</div>
-    </span>
-    <span class="docker__item">
-      <div>
-        <svg class="icon" aria-hidden="true">
-          <use xlink:href="#iconshopping-cart"></use>
-        </svg>
-      </div>
-      <div class="docker_title">购物车</div>
-    </span>
-    <span class="docker__item">
-      <div>
-        <svg class="icon" aria-hidden="true">
-          <use xlink:href="#icondingdan"></use>
-        </svg>
-      </div>
-      <div class="docker_title">订单</div>
-    </span>
-    <span class="docker__item">
-      <div>
-        <svg class="icon" aria-hidden="true">
-          <use xlink:href="#iconmy"></use>
-        </svg>
-      </div>
-      <div class="docker_title">我的</div>
+      <div class="docker_title">{{item.text}}</div>
     </span>
   </div>
 </template>
 <script>
 export default {
-  name: 'Docker'
+  name: 'Docker',
+  setup () {
+    const dockerList = [
+      { icon: '#iconhome', text: '首页' },
+      { icon: '#iconshopping-cart', text: '购物车' },
+      { icon: '#icondingdan', text: '订单' },
+      { icon: '#iconmy', text: '我的' }
+    ]
+    return {
+      dockerList
+    }
+  }
 }
 </script>
 
@@ -68,6 +57,7 @@ export default {
     }
     &--active {
       color: #1fa4fc;
+      fill:#1fa4fc;
     }
   }
 }
