@@ -8,7 +8,7 @@
       <input type="password" class="wrapper_input_content" placeholder="请输入密码">
     </div>
     <div class="wrapper_login-button" @click="handleLogin">登录</div>
-    <div class="wrapper_login-link">立即注册</div>
+    <div class="wrapper_login-link" @click="handleLoginRegister">立即注册</div>
   </div>
 </template>
 <script>
@@ -21,8 +21,12 @@ export default {
       localStorage.isLogin = true
       router.push({ name: 'Home' })
     }
+    const handleLoginRegister = () => {
+      router.push({ name: 'register' })
+    }
     return {
-      handleLogin
+      handleLogin,
+      handleLoginRegister
     }
   }
 }
