@@ -4,7 +4,7 @@
     <router-link
     v-for="item in nearbyList"
     :key="item._id"
-    to="/shop">
+    :to="`/shop/${item._id}`">
       <ShopInfo :item="item" :hideBorder="true"/>
     </router-link>
   </div>

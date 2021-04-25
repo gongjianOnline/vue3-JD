@@ -15,12 +15,14 @@
         <input class="search_content_input" placeholder="请输入商品名称"/>
       </div>
     </div>
-    <ShopInfo :item="item" :hideBorder="false"/>
+    <ShopInfo :item="data.item" :hideBorder="false"/>
   </div>
 </template>
 <script>
 import { useRouter } from 'vue-router'
+import { get } from '../../utils/request'
 import ShopInfo from '../../components/shopInfo'
+import { reactive } from 'vue'
 export default {
   name: 'shop',
   components: {
@@ -28,20 +30,21 @@ export default {
   },
   setup () {
     const router = useRouter()
-    const item = {
-      _id: '1',
-      name: '沃尔沃',
-      imgUrl: 'http://www.dell-lee.com/imgs/vue3/near.png',
-      sales: 10000,
-      expressLimit: 0,
-      expressPrice: 5,
-      slogan: 'VIPxxxxxxxx'
+    const data = reactive({
+      item: {}
+    })
+    const getItemData = async () => {
+      const response = await get('/api/shop/1')
+      if (response?.data.errno === 0 && response?.data?.data) {
+        data.item = response.data.data
+      }
     }
+    getItemData()
     const handleBackClick = () => {
       router.back()
     }
     return {
-      item,
+      data,
       handleBackClick
     }
   }
@@ -54,7 +57,7 @@ export default {
   padding: 0 .18rem;
 }
 .search{
-  margin: .2rem 0 .16rem 0;
+  margin: .14rem 0 .04rem 0;
   display: flex;
   &_back{
     .icon{
