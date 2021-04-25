@@ -1,32 +1,13 @@
 <template>
   <div class="nearby">
     <h3 class="nearby_title">附近店铺</h3>
-    <div class="nearby_item"
-    v-for="(item) in nearbyList"
-    :key="item._id">
-      <img
-        class="nearby_item_img"
-        :src="item.imgUrl"
-        alt=""
-      />
-      <div class="nearby_content">
-        <div class="nearby_content_title">{{item.name}}</div>
-        <div class="nearby_content_tags">
-          <span class="nearby_content_tag">月售: {{item.sales}}</span>
-          <span class="nearby_content_tag">起送: {{item.expressLimit}}</span>
-          <span class="nearby_content_tag">基础运费: {{item.expressPrice}}</span>
-        </div>
-        <p class="nearby_content_highlight">
-          {{item.slogan}}
-        </p>
-      </div>
-    </div>
+    <ShopInfo v-for="item in nearbyList" :key="item._id" :item="item"/>
   </div>
 </template>
 <script>
 import { get } from '../../utils/request.js'
 import { ref } from 'vue'
-
+import ShopInfo from '../../components/shopInfo'
 const useNearbyListEffect = () => {
   const nearbyList = ref([])
   const getNearbyList = async () => {
@@ -40,6 +21,7 @@ const useNearbyListEffect = () => {
 
 export default {
   name: 'Nearby',
+  components: { ShopInfo },
   setup () {
     const { nearbyList, getNearbyList } = useNearbyListEffect()
     getNearbyList()
