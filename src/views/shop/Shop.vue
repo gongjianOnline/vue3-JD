@@ -19,7 +19,7 @@
   </div>
 </template>
 <script>
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { get } from '../../utils/request'
 import ShopInfo from '../../components/shopInfo'
 import { reactive } from 'vue'
@@ -30,11 +30,14 @@ export default {
   },
   setup () {
     const router = useRouter()
+    const route = useRoute()
+    console.log(route.params)
+    const pageId = route.params.id
     const data = reactive({
       item: {}
     })
     const getItemData = async () => {
-      const response = await get('/api/shop/1')
+      const response = await get(`/api/shop/${pageId}`)
       if (response?.data.errno === 0 && response?.data?.data) {
         data.item = response.data.data
       }
