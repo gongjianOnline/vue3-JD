@@ -12,6 +12,7 @@
       <input type="password"
       class="wrapper_input_content"
       placeholder="请输入密码"
+      autocomplete="new-password"
       v-model="password">
     </div>
     <div class="wrapper_login-button" @click="handleLogin">登录</div>
@@ -39,7 +40,10 @@ const useLoginEffect = (showToastFun) => {
       })
       if (response?.data?.errno === 0) {
         localStorage.isLogin = true
-        router.push({ name: 'Home' })
+        showToastFun('正在验证用户信息...')
+        setTimeout(() => {
+          router.push({ name: 'Home' })
+        }, 3000)
       } else {
         showToastFun('登录失败')
       }
