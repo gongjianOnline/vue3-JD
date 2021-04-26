@@ -1,22 +1,22 @@
 <template>
   <div class="content">
     <div class="category">
-      <div class="category_item category_item-active">全部商品</div>
-      <div class="category_item">秒杀</div>
-      <div class="category_item">新鲜水果</div>
-      <div class="category_item">生鲜食品</div>
-      <div class="category_item">时令蔬菜</div>
-      <div class="category_item">肉蛋家禽</div>
+      <!-- category_item-active -->
+      <div class="category_item"
+      :class="{'category_item-active':currentTab===item.type}"
+      v-for="item in categories"
+      :key="item.type"
+      @click="()=>handleTabClick(item.type)">{{item.name}}</div>
     </div>
     <div class="product">
-      <div class="product_item">
+      <div class="product_item" v-for="item in list" :key="item._id">
         <img class="product_item_img" src="http://www.dell-lee.com/imgs/vue3/near.png" alt="">
         <div class="product_item_detail">
-          <h4 class="product_item_title">番茄250g/份</h4>
-          <p class="product_item_sales">月售10件</p>
+          <h4 class="product_item_title">{{item.name}}</h4>
+          <p class="product_item_sales">月售{{item.sales}}</p>
           <p class="product_item_price">
-            <span class="product_item_yen">&yen;</span> 33.6
-            <span class="product_item_origin">66.6</span>
+            <span class="product_item_yen">&yen;</span> {{item.price}}
+            <span class="product_item_origin">&yen; {{item.oldPrice}}</span>
           </p>
         </div>
         <div class="product_number">
@@ -29,7 +29,64 @@
   </div>
 </template>
 <script>
+import { reactive, ref, toRefs, watchEffect } from 'vue'
+import { useRoute } from 'vue-router'
+import { get } from '../../utils/request'
+
+const categories = [
+  {
+    name: '全部商品',
+    type: 'all'
+  },
+  {
+    name: '秒杀',
+    type: 'seckill'
+  },
+  {
+    name: '新鲜水果',
+    type: 'fruit'
+  }
+]
+// tab 切换
+const usetabEffect = () => {
+  const currentTab = ref(categories[0].type)
+  const handleTabClick = (tag) => {
+    // getContentData(tag)
+    currentTab.value = tag
+  }
+  return { currentTab, handleTabClick }
+}
+
+// 列表内容相关
+const useCurrentListEffect = (currentTab) => {
+  const route = useRoute()
+  const shopId = route.params.id
+  const content = reactive({
+    list: []
+  })
+  // 获取列表内容
+  const getContentData = async () => {
+    const response = await get(`/api/shop/${shopId}/products`, {
+      tab: currentTab.value
+    })
+    if (response?.data?.errno === 0 && response?.data?.data?.length) {
+      content.list = response.data.data
+    }
+  }
+  watchEffect(() => {
+    getContentData()
+  })
+  const { list } = toRefs(content)
+  return { list }
+}
+
 export default {
+  name: 'Content',
+  setup () {
+    const { currentTab, handleTabClick } = usetabEffect()
+    const { list } = useCurrentListEffect(currentTab)
+    return { categories, currentTab, handleTabClick, list }
+  }
 }
 </script>
 <style lang="scss" scoped>

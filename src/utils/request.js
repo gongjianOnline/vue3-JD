@@ -18,7 +18,10 @@ export const post = (url, data = {}) => {
 }
 export const get = (url, params = {}) => {
   return new Promise((resolve, reject) => {
-    instance.get(url, params, {
+    instance({
+      methods: 'get',
+      url: url,
+      params: params
     }).then((response) => {
       resolve(response)
     }, (err) => {
