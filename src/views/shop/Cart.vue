@@ -3,17 +3,57 @@
     <div class="check">
       <div class="check_icon">
         <img class="check_icon_img" src="http://www.dell-lee.com/imgs/vue3/basket.png" alt="">
-        <div class="check_icon_tag">1</div>
+        <div class="check_icon_tag">{{total || 0}}</div>
       </div>
       <div class="check_info">
-        总计: <span class="check_info_price">&yen; 123</span>
+        总计: <span class="check_info_price">&yen; {{price}}</span>
       </div>
       <div class="check_btn">去结算</div>
     </div>
   </div>
 </template>
 <script>
+import { computed } from 'vue'
+import { useStore } from 'vuex'
+import { useRoute } from 'vue-router'
+// 获取购物车信息逻辑
+const useCartEffect = () => {
+  const store = useStore()
+  const route = useRoute()
+  const carList = store.state.cartList
+  const shopId = route.params.id
+  const total = computed(() => {
+    const productList = carList[shopId]
+    let count = 0
+    if (!productList) { return 0 }
+    /* eslint-disable */
+    for (let i in productList) {
+      const product = productList[i]
+      count += product.count
+    }
+    /* eslint-enable */
+    return count
+  })
+  const price = computed(() => {
+    const productList = carList[shopId]
+    let count = 0
+    if (!productList) { return 0 }
+    /* eslint-disable */
+    for (let i in productList) {
+      const product = productList[i]
+      count += (product.count * product.price)
+    }
+    /* eslint-enable */
+    return count.toFixed(2)
+  })
+  return { total, price }
+}
 export default {
+  name: 'cart',
+  setup () {
+    const { total, price } = useCartEffect()
+    return { total, price }
+  }
 }
 </script>
 <style lang="scss" scoped>
