@@ -15,39 +15,49 @@
         <input class="search_content_input" placeholder="请输入商品名称"/>
       </div>
     </div>
-    <ShopInfo :item="data.item" :hideBorder="false"/>
+    <ShopInfo :item="item" :hideBorder="false"/>
   </div>
 </template>
 <script>
 import { useRouter, useRoute } from 'vue-router'
 import { get } from '../../utils/request'
 import ShopInfo from '../../components/shopInfo'
-import { reactive } from 'vue'
+import { reactive, toRefs } from 'vue'
+// ShopInfo组件数据维护 , 获取当前数据信息
+const useShopEffect = () => {
+  const route = useRoute()
+  const pageId = route.params.id
+  const data = reactive({
+    item: {}
+  })
+  const getItemData = async () => {
+    const response = await get(`/api/shop/${pageId}`)
+    if (response?.data.errno === 0 && response?.data?.data) {
+      data.item = response.data.data
+    }
+  }
+  const { item } = toRefs(data)
+  return { item, getItemData }
+}
+// 返回按钮逻辑维护
+const useBackRoutereffect = () => {
+  const router = useRouter()
+  const handleBackClick = () => {
+    router.back()
+  }
+  return { handleBackClick }
+}
 export default {
   name: 'shop',
   components: {
     ShopInfo
   },
   setup () {
-    const router = useRouter()
-    const route = useRoute()
-    console.log(route.params)
-    const pageId = route.params.id
-    const data = reactive({
-      item: {}
-    })
-    const getItemData = async () => {
-      const response = await get(`/api/shop/${pageId}`)
-      if (response?.data.errno === 0 && response?.data?.data) {
-        data.item = response.data.data
-      }
-    }
+    const { item, getItemData } = useShopEffect()
     getItemData()
-    const handleBackClick = () => {
-      router.back()
-    }
+    const { handleBackClick } = useBackRoutereffect()
     return {
-      data,
+      item,
       handleBackClick
     }
   }
