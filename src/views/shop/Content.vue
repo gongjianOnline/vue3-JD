@@ -19,6 +19,11 @@
             <span class="product_item_origin">66.6</span>
           </p>
         </div>
+        <div class="product_number">
+          <span class="product_number_minus">-</span>
+          0
+          <span class="product_number_add">+</span>
+        </div>
       </div>
     </div>
   </div>
@@ -28,6 +33,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+@import '../../style/mixins.scss';
 .content{
   display: flex;
   position: absolute;
@@ -58,6 +64,10 @@ export default {
     display: flex;
     padding: .12rem 0;
     margin: 0 .16rem;
+    position: relative;
+    &_detail{
+      overflow: hidden;
+    }
     &_img{
       width: .68rem;
       height: .68rem;
@@ -68,6 +78,7 @@ export default {
       font-size: .14rem;
       color: #333;
       margin: 0;
+      @include ellipsis;
     }
     &_sales{
       margin: .06rem 0;
@@ -90,6 +101,30 @@ export default {
       color:#999;
       text-decoration: line-through;
       margin-left: .06rem;
+    }
+    .product_number{
+      position:absolute;
+      bottom: .12rem;
+      right: 0rem;
+      &_minus,&_add{
+        width: .2rem;
+        height: .2rem;
+        display: inline-block;
+        border-radius: 50%;
+        font-size: .2rem;
+        text-align: center;
+        line-height: .16rem;
+        border: 1px solid #666;
+      }
+      &_minus{
+        margin-right: .05rem;
+      }
+      &_add{
+        background-color: #0091ff;
+        color: #fff;
+        border-color: #fff;
+        margin-left: .05rem;
+      }
     }
   }
 }
