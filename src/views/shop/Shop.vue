@@ -15,7 +15,7 @@
         <input class="search_content_input" placeholder="请输入商品名称"/>
       </div>
     </div>
-    <ShopInfo :item="item" :hideBorder="false"/>
+    <ShopInfo :item="item" :hideBorder="false" v-show="item.imgUrl"/>
   </div>
 </template>
 <script>
