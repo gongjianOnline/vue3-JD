@@ -1,21 +1,23 @@
 <template>
   <div class="cart">
     <div class="product">
-      <div class="product_item" v-for="item in productList" :key="item._id">
-        <img class="product_item_img" :src="item.imgUrl" alt="">
-        <div class="product_item_detail">
-          <h4 class="product_item_title">{{item.name}}</h4>
-          <p class="product_item_price">
-            <span class="product_item_yen">&yen;</span> {{item.price}}
-            <span class="product_item_origin">&yen; {{item.oldPrice}}</span>
-          </p>
+      <template v-for="item in productList" :key="item._id">
+        <div class="product_item" v-if="item.count > 0">
+          <img class="product_item_img" :src="item.imgUrl" alt="">
+          <div class="product_item_detail">
+            <h4 class="product_item_title">{{item.name}}</h4>
+            <p class="product_item_price">
+              <span class="product_item_yen">&yen;</span> {{item.price}}
+              <span class="product_item_origin">&yen; {{item.oldPrice}}</span>
+            </p>
+          </div>
+          <div class="product_number">
+            <span class="product_number_minus" @click="()=>{changeItemInfo(shopId, item._id, item, -1)}">-</span>
+            {{item.count || 0}}
+            <span class="product_number_add" @click="()=>{changeItemInfo(shopId, item._id, item, 1)}">+</span>
+          </div>
         </div>
-        <div class="product_number">
-          <span class="product_number_minus" @click="()=>{changeItemInfo(shopId, item._id, item, -1)}">-</span>
-          {{item.count || 0}}
-          <span class="product_number_add" @click="()=>{changeItemInfo(shopId, item._id, item, 1)}">+</span>
-        </div>
-      </div>
+      </template>
     </div>
 
     <div class="check">
@@ -34,6 +36,7 @@
 import { computed } from 'vue'
 import { useStore } from 'vuex'
 import { useRoute } from 'vue-router'
+import { useCommonCartEffect } from './commonCartEffect'
 // 获取购物车信息逻辑
 const useCartEffect = (shopId) => {
   const store = useStore()
@@ -74,7 +77,8 @@ export default {
     const route = useRoute()
     const shopId = route.params.id
     const { total, price, productList } = useCartEffect(shopId)
-    return { total, price, productList }
+    const { changeItemInfo } = useCommonCartEffect()
+    return { total, price, productList, changeItemInfo, shopId }
   }
 }
 </script>
