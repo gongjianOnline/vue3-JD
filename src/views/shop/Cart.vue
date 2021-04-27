@@ -12,9 +12,9 @@
             </p>
           </div>
           <div class="product_number">
-            <span class="product_number_minus" @click="()=>{changeItemInfo(shopId, item._id, item, -1)}">-</span>
+            <span class="product_number_minus" @click="()=>{changeCartItemInfo(shopId, item._id, item, -1)}">-</span>
             {{item.count || 0}}
-            <span class="product_number_add" @click="()=>{changeItemInfo(shopId, item._id, item, 1)}">+</span>
+            <span class="product_number_add" @click="()=>{changeCartItemInfo(shopId, item._id, item, 1)}">+</span>
           </div>
         </div>
       </template>
@@ -39,6 +39,7 @@ import { useRoute } from 'vue-router'
 import { useCommonCartEffect } from './commonCartEffect'
 // 获取购物车信息逻辑
 const useCartEffect = (shopId) => {
+  const { changeCartItemInfo } = useCommonCartEffect()
   const store = useStore()
   const carList = store.state.cartList
   const total = computed(() => {
@@ -69,16 +70,15 @@ const useCartEffect = (shopId) => {
     const productList = carList[shopId] || []
     return productList
   })
-  return { total, price, productList }
+  return { total, price, productList, changeCartItemInfo }
 }
 export default {
   name: 'cart',
   setup () {
     const route = useRoute()
     const shopId = route.params.id
-    const { total, price, productList } = useCartEffect(shopId)
-    const { changeItemInfo } = useCommonCartEffect()
-    return { total, price, productList, changeItemInfo, shopId }
+    const { total, price, productList, changeCartItemInfo } = useCartEffect(shopId)
+    return { total, price, productList, shopId, changeCartItemInfo }
   }
 }
 </script>
@@ -148,6 +148,14 @@ export default {
     padding: .12rem 0;
     margin: 0 .16rem;
     position: relative;
+    &_checked{
+      .icon{
+        color: #0091FF
+      }
+      line-height: .5rem;
+      margin-right: .2rem;
+      font-size: .2rem;
+    }
     &_detail{
       overflow: hidden;
     }
