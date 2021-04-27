@@ -3,6 +3,11 @@
     <div class="product">
       <template v-for="item in productList" :key="item._id">
         <div class="product_item" v-if="item.count > 0">
+          <div class="product_item_checked">
+            <svg class="icon" aria-hidden="true">
+              <use :xlink:href="item.check ? '#iconicons-' : '#iconchecked'"></use>
+            </svg>
+          </div>
           <img class="product_item_img" :src="item.imgUrl" alt="">
           <div class="product_item_detail">
             <h4 class="product_item_title">{{item.name}}</h4>
