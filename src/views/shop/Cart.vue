@@ -1,10 +1,11 @@
 <template>
+  <div class="mask" v-show="showChart"></div>
   <div class="cart">
-    <div class="product">
+    <div class="product" v-show="showChart">
       <div class="product_header">
-        <div class="product_header_all">
+        <div class="product_header_all" @click="()=>setCartItemChecked(shopId)">
           <svg class="icon" aria-hidden="true">
-            <use xlink:href="#iconicons-"></use>
+            <use :xlink:href="allChecked?'#iconchecked':'#iconicons-'"></use>
           </svg>
           全选
         </div>
@@ -36,7 +37,11 @@
 
     <div class="check">
       <div class="check_icon">
-        <img class="check_icon_img" src="http://www.dell-lee.com/imgs/vue3/basket.png" alt="">
+        <img
+        class="check_icon_img"
+        src="http://www.dell-lee.com/imgs/vue3/basket.png"
+        alt=""
+        @click="hanleCartShowChange">
         <div class="check_icon_tag">{{total || 0}}</div>
       </div>
       <div class="check_info">
@@ -47,7 +52,7 @@
   </div>
 </template>
 <script>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useStore } from 'vuex'
 import { useRoute } from 'vue-router'
 import { useCommonCartEffect } from './commonCartEffect'
@@ -82,6 +87,20 @@ const useCartEffect = (shopId) => {
     /* eslint-enable */
     return count.toFixed(2)
   })
+  const allChecked = computed(() => {
+    const productList = carList[shopId]
+    let result = true
+    if (!productList) { return 0 }
+    /* eslint-disable */
+    for (let i in productList) {
+      const product = productList[i]
+      if (product.count > 0 && !product.check) {
+        result = false
+      }
+    }
+    /* eslint-enable */
+    return result
+  })
   const productList = computed(() => {
     const productList = carList[shopId] || []
     return productList
@@ -96,13 +115,19 @@ const useCartEffect = (shopId) => {
   const cleanCartProducts = (shopId) => {
     store.commit('cleanCartProducts', { shopId })
   }
+
+  const setCartItemChecked = (shopId) => {
+    store.commit('setCartItemChecked', { shopId })
+  }
   return {
     total,
     price,
     productList,
     changeCartItemInfo,
     changeCartItemChecked,
-    cleanCartProducts
+    cleanCartProducts,
+    allChecked,
+    setCartItemChecked
   }
 }
 export default {
@@ -110,13 +135,19 @@ export default {
   setup () {
     const route = useRoute()
     const shopId = route.params.id
+    const showChart = ref(false)
+    const hanleCartShowChange = () => {
+      showChart.value = !showChart.value
+    }
     const {
       total,
       price,
       productList,
       changeCartItemInfo,
       changeCartItemChecked,
-      cleanCartProducts
+      cleanCartProducts,
+      allChecked,
+      setCartItemChecked
     } = useCartEffect(shopId)
     return {
       total,
@@ -125,18 +156,33 @@ export default {
       shopId,
       changeCartItemInfo,
       changeCartItemChecked,
-      cleanCartProducts
+      cleanCartProducts,
+      allChecked,
+      setCartItemChecked,
+      showChart,
+      hanleCartShowChange
     }
   }
 }
 </script>
 <style lang="scss" scoped>
 @import '../../style/mixins.scss';
+.mask{
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+  background-color: rgba(0,0,0,0.5);
+  z-index: 1;
+}
 .cart{
   position: absolute;
   left: 0;
   right: 0;
   bottom: 0;
+  z-index: 2;
+  background-color: #fff;
 }
 .check{
   display: flex;
@@ -199,9 +245,9 @@ export default {
     &_all{
       width: .64rem;
       margin-left: .18rem;
-      
       .icon{
         font-size: .2rem;
+        display: inline-block;
         fill:#0091FF;
       }
     }
