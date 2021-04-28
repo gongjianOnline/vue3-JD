@@ -1,5 +1,8 @@
 <template>
-  <div class="mask" v-show="showChart"></div>
+  <div
+  class="mask"
+  @click="hanleCartShowChange"
+  v-show="showChart"></div>
   <div class="cart">
     <div class="product" v-show="showChart">
       <div class="product_header">
@@ -9,7 +12,9 @@
           </svg>
           全选
         </div>
-        <div class="product_header_clear" @click="()=>cleanCartProducts(shopId)">清空购物车</div>
+        <div class="product_header_clear">
+          <span @click="()=>cleanCartProducts(shopId)">清空购物车</span>
+        </div>
       </div>
       <template v-for="item in productList" :key="item._id">
         <div class="product_item" v-if="item.count > 0">
@@ -47,7 +52,9 @@
       <div class="check_info">
         总计: <span class="check_info_price">&yen; {{price}}</span>
       </div>
-      <div class="check_btn">去结算</div>
+      <div class="check_btn">
+        <router-link :to="{name:'Home'}">去结算</router-link>
+      </div>
     </div>
   </div>
 </template>
@@ -130,15 +137,20 @@ const useCartEffect = (shopId) => {
     setCartItemChecked
   }
 }
+// 展示隐藏购物车逻辑
+const toggleCartEffect = () => {
+  const showChart = ref(false)
+  const hanleCartShowChange = () => {
+    showChart.value = !showChart.value
+  }
+  return { showChart, hanleCartShowChange }
+}
 export default {
   name: 'cart',
   setup () {
     const route = useRoute()
     const shopId = route.params.id
-    const showChart = ref(false)
-    const hanleCartShowChange = () => {
-      showChart.value = !showChart.value
-    }
+    const { showChart, hanleCartShowChange } = toggleCartEffect()
     const {
       total,
       price,
@@ -167,6 +179,10 @@ export default {
 </script>
 <style lang="scss" scoped>
 @import '../../style/mixins.scss';
+a{
+  color:#fff;
+  text-decoration: none;
+}
 .mask{
   position: fixed;
   left: 0;
