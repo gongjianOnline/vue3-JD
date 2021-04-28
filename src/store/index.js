@@ -14,6 +14,7 @@ export default createStore({
     cartList: {}
   },
   mutations: {
+    // 购物车
     changeCartItemInfo (state, payload) {
       const { shopId, productId, productInfo, num } = payload
       let shopInfo = state.cartList[shopId]
@@ -27,11 +28,22 @@ export default createStore({
       if (product.count < 0) {
         product.count = 0
       }
-      if (product.num > 0) {
+      if (payload.num > 0) {
         product.check = true
       }
       shopInfo[productId] = product
       state.cartList[shopId] = shopInfo
+    },
+    // 复选框
+    chngecartItemChecked (state, payload) {
+      const { shopId, productId } = payload
+      const product = state.cartList[shopId][productId]
+      product.check = !product.check
+    },
+    // 清除购物车
+    cleanCartProducts (state, payload) {
+      const { shopId } = payload
+      state.cartList[shopId] = {}
     }
   },
   actions: {

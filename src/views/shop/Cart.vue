@@ -1,11 +1,20 @@
 <template>
   <div class="cart">
     <div class="product">
+      <div class="product_header">
+        <div class="product_header_all">
+          <svg class="icon" aria-hidden="true">
+            <use xlink:href="#iconicons-"></use>
+          </svg>
+          全选
+        </div>
+        <div class="product_header_clear" @click="()=>cleanCartProducts(shopId)">清空购物车</div>
+      </div>
       <template v-for="item in productList" :key="item._id">
         <div class="product_item" v-if="item.count > 0">
-          <div class="product_item_checked">
+          <div class="product_item_checked" @click="()=>changeCartItemChecked(shopId, item._id)">
             <svg class="icon" aria-hidden="true">
-              <use :xlink:href="item.check ? '#iconicons-' : '#iconchecked'"></use>
+              <use :xlink:href="item.check == true?'#iconchecked':'#iconicons-'"></use>
             </svg>
           </div>
           <img class="product_item_img" :src="item.imgUrl" alt="">
@@ -66,7 +75,9 @@ const useCartEffect = (shopId) => {
     /* eslint-disable */
     for (let i in productList) {
       const product = productList[i]
-      count += (product.count * product.price)
+      if (product.check) {
+        count += (product.count * product.price)
+      }
     }
     /* eslint-enable */
     return count.toFixed(2)
@@ -75,15 +86,47 @@ const useCartEffect = (shopId) => {
     const productList = carList[shopId] || []
     return productList
   })
-  return { total, price, productList, changeCartItemInfo }
+
+  const changeCartItemChecked = (shopId, productId) => {
+    store.commit('chngecartItemChecked', {
+      shopId, productId
+    })
+  }
+
+  const cleanCartProducts = (shopId) => {
+    store.commit('cleanCartProducts', { shopId })
+  }
+  return {
+    total,
+    price,
+    productList,
+    changeCartItemInfo,
+    changeCartItemChecked,
+    cleanCartProducts
+  }
 }
 export default {
   name: 'cart',
   setup () {
     const route = useRoute()
     const shopId = route.params.id
-    const { total, price, productList, changeCartItemInfo } = useCartEffect(shopId)
-    return { total, price, productList, shopId, changeCartItemInfo }
+    const {
+      total,
+      price,
+      productList,
+      changeCartItemInfo,
+      changeCartItemChecked,
+      cleanCartProducts
+    } = useCartEffect(shopId)
+    return {
+      total,
+      price,
+      productList,
+      shopId,
+      changeCartItemInfo,
+      changeCartItemChecked,
+      cleanCartProducts
+    }
   }
 }
 </script>
@@ -148,6 +191,28 @@ export default {
   flex:1;
   overflow: scroll;
   background-color: #fff;
+  &_header{
+    display: flex;
+    height: .42rem;
+    border-bottom: 1px solid #f1f1f1;
+    line-height: .42rem;
+    &_all{
+      width: .64rem;
+      margin-left: .18rem;
+      
+      .icon{
+        font-size: .2rem;
+        fill:#0091FF;
+      }
+    }
+    &_clear{
+      font-size: .14rem;
+      color: #333;
+      margin-right: .16rem;
+      flex: 1;
+      text-align: right;
+    }
+  }
   &_item{
     display: flex;
     padding: .12rem 0;
