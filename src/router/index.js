@@ -1,6 +1,11 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 const routes = [
   {
+    path: '/CartList',
+    name: 'CartList',
+    component: () => import(/* webpackChunkName:"CartList" */ '../views/cartList/CartList.vue')
+  },
+  {
     path: '/',
     name: 'Home',
     component: () => import(/* webpackChunkName:"home" */ '../views/home/Home.vue')

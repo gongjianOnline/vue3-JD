@@ -3,12 +3,14 @@
     <span v-for="(item,index) in dockerList" :key="index"
     class="docker__item"
     :class="{'docker__item--active':index === 0? true : false}">
-      <div>
-        <svg class="icon" aria-hidden="true">
-          <use :xlink:href="item.icon"></use>
-        </svg>
-      </div>
-      <div class="docker_title">{{item.text}}</div>
+      <router-link :to="item.to">
+        <div>
+          <svg class="icon" aria-hidden="true">
+            <use :xlink:href="item.icon"></use>
+          </svg>
+        </div>
+        <div class="docker_title">{{item.text}}</div>
+      </router-link>
     </span>
   </div>
 </template>
@@ -17,10 +19,10 @@ export default {
   name: 'Docker',
   setup () {
     const dockerList = [
-      { icon: '#iconhome', text: '首页' },
-      { icon: '#iconshopping-cart', text: '购物车' },
-      { icon: '#icondingdan', text: '订单' },
-      { icon: '#iconmy', text: '我的' }
+      { icon: '#iconhome', text: '首页', to: { name: 'Home' } },
+      { icon: '#iconshopping-cart', text: '购物车', to: { name: 'CartList' } },
+      { icon: '#icondingdan', text: '订单', to: { name: 'Home' } },
+      { icon: '#iconmy', text: '我的', to: { name: 'Home' } }
     ]
     return {
       dockerList
@@ -49,6 +51,10 @@ export default {
     .icon {
       font-size: 0.18rem;
       margin: 0.07rem 0 0.02rem 0;
+    }
+    a{
+      color: $content-fontColor;
+      text-decoration: none;
     }
     &_title {
       font-size: 0.2rem;
