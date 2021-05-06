@@ -32,14 +32,17 @@
             </p>
           </div>
           <div class="product_number">
-            <span class="product_number_minus" @click="()=>{changeCartItemInfo(shopId, item._id, item, -1)}">-</span>
+            <span
+            class="product_number_minus"
+            @click="()=>{changeCartItemInfo(shopId, item._id, item, -1)}">-</span>
             {{item.count || 0}}
-            <span class="product_number_add" @click="()=>{changeCartItemInfo(shopId, item._id, item, 1)}">+</span>
+            <span
+            class="product_number_add"
+            @click="()=>{changeCartItemInfo(shopId, item._id, item, 1)}">+</span>
           </div>
         </div>
       </template>
     </div>
-
     <div class="check">
       <div class="check_icon">
         <img
@@ -69,7 +72,7 @@ const useCartEffect = (shopId) => {
   const store = useStore()
   const carList = store.state.cartList
   const total = computed(() => {
-    const productList = carList[shopId]
+    const productList = carList[shopId]?.productList
     let count = 0
     if (!productList) { return 0 }
     /* eslint-disable */
@@ -81,7 +84,7 @@ const useCartEffect = (shopId) => {
     return count
   })
   const price = computed(() => {
-    const productList = carList[shopId]
+    const productList = carList[shopId]?.productList
     let count = 0
     if (!productList) { return 0 }
     /* eslint-disable */
@@ -95,7 +98,7 @@ const useCartEffect = (shopId) => {
     return count.toFixed(2)
   })
   const allChecked = computed(() => {
-    const productList = carList[shopId]
+    const productList = carList[shopId]?.productList
     let result = true
     if (!productList) { return 0 }
     /* eslint-disable */
@@ -109,7 +112,7 @@ const useCartEffect = (shopId) => {
     return result
   })
   const productList = computed(() => {
-    const productList = carList[shopId] || []
+    const productList = carList[shopId]?.productList || []
     return productList
   })
 
