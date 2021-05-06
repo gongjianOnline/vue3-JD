@@ -2,13 +2,13 @@
   <div
   class="mask"
   @click="hanleCartShowChange"
-  v-show="showChart"></div>
+  v-show="showChart && calculations.total>0"></div>
   <div class="cart">
-    <div class="product" v-show="showChart">
+    <div class="product" v-show="showChart && calculations.total>0">
       <div class="product_header">
         <div class="product_header_all" @click="()=>setCartItemChecked(shopId)">
           <svg class="icon" aria-hidden="true">
-            <use :xlink:href="allChecked?'#iconchecked':'#iconicons-'"></use>
+            <use :xlink:href="calculations.allChecked?'#iconchecked':'#iconicons-'"></use>
           </svg>
           全选
         </div>
@@ -50,10 +50,10 @@
         src="http://www.dell-lee.com/imgs/vue3/basket.png"
         alt=""
         @click="hanleCartShowChange">
-        <div class="check_icon_tag">{{total || 0}}</div>
+        <div class="check_icon_tag">{{calculations.total || 0}}</div>
       </div>
       <div class="check_info">
-        总计: <span class="check_info_price">&yen; {{price}}</span>
+        总计: <span class="check_info_price">&yen; {{calculations.price}}</span>
       </div>
       <div class="check_btn">
         <router-link :to="{name:'Home'}">去结算</router-link>
@@ -71,46 +71,26 @@ const useCartEffect = (shopId) => {
   const { changeCartItemInfo } = useCommonCartEffect()
   const store = useStore()
   const carList = store.state.cartList
-  const total = computed(() => {
+  const calculations = computed(() => {
     const productList = carList[shopId]?.productList
-    let count = 0
+    const result = { total: 0, price: 0, allChecked: true }
     if (!productList) { return 0 }
     /* eslint-disable */
     for (let i in productList) {
       const product = productList[i]
-      count += product.count
-    }
-    /* eslint-enable */
-    return count
-  })
-  const price = computed(() => {
-    const productList = carList[shopId]?.productList
-    let count = 0
-    if (!productList) { return 0 }
-    /* eslint-disable */
-    for (let i in productList) {
-      const product = productList[i]
+      result.total += product.count
       if (product.check) {
-        count += (product.count * product.price)
+        result.price += (product.count * product.price)
       }
-    }
-    /* eslint-enable */
-    return count.toFixed(2)
-  })
-  const allChecked = computed(() => {
-    const productList = carList[shopId]?.productList
-    let result = true
-    if (!productList) { return 0 }
-    /* eslint-disable */
-    for (let i in productList) {
-      const product = productList[i]
       if (product.count > 0 && !product.check) {
-        result = false
+        result.allChecked = false
       }
     }
     /* eslint-enable */
+    result.price = result.price.toFixed(2)
     return result
   })
+
   const productList = computed(() => {
     const productList = carList[shopId]?.productList || []
     return productList
@@ -130,13 +110,11 @@ const useCartEffect = (shopId) => {
     store.commit('setCartItemChecked', { shopId })
   }
   return {
-    total,
-    price,
+    calculations,
     productList,
     changeCartItemInfo,
     changeCartItemChecked,
     cleanCartProducts,
-    allChecked,
     setCartItemChecked
   }
 }
@@ -155,24 +133,20 @@ export default {
     const shopId = route.params.id
     const { showChart, hanleCartShowChange } = toggleCartEffect()
     const {
-      total,
-      price,
+      calculations,
       productList,
       changeCartItemInfo,
       changeCartItemChecked,
       cleanCartProducts,
-      allChecked,
       setCartItemChecked
     } = useCartEffect(shopId)
     return {
-      total,
-      price,
+      calculations,
       productList,
       shopId,
       changeCartItemInfo,
       changeCartItemChecked,
       cleanCartProducts,
-      allChecked,
       setCartItemChecked,
       showChart,
       hanleCartShowChange
