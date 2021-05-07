@@ -2,7 +2,7 @@
   <div class="wrapper">
     <div class="top">
       <div class="top_header">
-        <svg class="icon iconback" aria-hidden="true">
+        <svg class="icon iconback" aria-hidden="true" @click="handleBackClick">
           <use xlink:href="#iconback"></use>
         </svg>
         确认订单
@@ -21,37 +21,50 @@
         </div>
       </div>
     </div>
+
     <div class="products">
       <div class="products_title">{{shopName}}</div>
-      <div class="products_list">
-        <div class="products_item" v-for="(item) in productList" :key="item._id">
-          <img class="products_item_img" :src="item.imgUrl" alt="" />
-          <div class="products_item_detail">
-            <h4 class="products_item_title">{{item.name}}</h4>
-            <p class="products_item_price">
-              <span class="">
-                <span class="products_item_yen">&yen;</span>{{item.price}} x {{item.count}}
-              </span>
-              <span class="products_item_total">
-                <span class="products_item_yen">&yen;</span>{{item.price * item.count}}
-              </span>
-            </p>
-          </div>
+      <div class="products_wrapper">
+        <div class="products_list">
+          <template v-for="(item) in productList" :key="item._id">
+            <div class="products_item" v-if="item.count > 0">
+              <img class="products_item_img" :src="item.imgUrl" alt="" />
+              <div class="products_item_detail">
+                <h4 class="products_item_title">{{item.name}}</h4>
+                <p class="products_item_price">
+                  <span class="">
+                    <span class="products_item_yen">&yen;</span>{{item.price}} x {{item.count}}
+                  </span>
+                  <span class="products_item_total">
+                    <span class="products_item_yen">&yen;</span>{{item.price * item.count}}
+                  </span>
+                </p>
+              </div>
+            </div>
+          </template>
         </div>
       </div>
+    </div>
+    <div class="order">
+      <div class="order_price">实付金额 <b>￥{{calculations.price}}</b></div>
+      <div class="order_btn">提交订单</div>
     </div>
   </div>
 </template>
 <script>
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useCommonCartEffect } from '../../effects/cartEffects'
 export default {
   name: 'OrderConfirmation',
   setup () {
     const route = useRoute()
+    const router = useRouter()
     const shopId = route.params.id
-    const { productList, shopName } = useCommonCartEffect(shopId)
-    return { productList, shopName }
+    const { productList, shopName, calculations } = useCommonCartEffect(shopId)
+    const handleBackClick = () => {
+      router.back()
+    }
+    return { productList, shopName, calculations, handleBackClick }
   }
 }
 </script>
@@ -64,6 +77,7 @@ export default {
   right: 0;
   bottom: 0;
   background-color: #eee;
+  overflow-y: scroll;
 }
 .top {
   position: relative;
@@ -125,18 +139,29 @@ export default {
   }
 }
 .products{
-  margin: .16rem .18rem .55rem .18rem;
+  margin: .16rem .18rem .1rem .18rem;
   background: #fff;
+  &_wrapper{
+    overflow-y: scroll;
+    position: absolute;
+    top: 2.6rem;
+    left: 0;
+    right: 0;
+    bottom: .6rem;
+    margin: 0 .18rem;
+  }
   &_title{
-    padding: .16rem .16rem 0 .16rem;
+    padding: .16rem .16rem .16rem .16rem;
     font-size: .16rem;
     color: #333;
   }
   &_list {
+    background: #fff;
+    padding-bottom: .16rem;
   }
   &_item {
     display: flex;
-    padding: 0.16rem;
+    padding: 0.16rem .16rem 0 .16rem;
     position: relative;
     &_img {
       width: 0.46rem;
@@ -168,6 +193,29 @@ export default {
     &_yen {
       font-size: 0.12rem;
     }
+  }
+}
+.order{
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  height: .49rem;
+  line-height: .49rem;
+  &_price{
+    flex: 1;
+    background: #fff;
+    text-indent: .24rem;
+    font-size: .14rem;
+    color: #333;
+  }
+  &_btn{
+    width: .98rem;
+    background: #4FB0F9;
+    color: #fff;
+    text-align: center;
+    font-size: .14rem;
   }
 }
 </style>
