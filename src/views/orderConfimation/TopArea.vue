@@ -22,8 +22,16 @@
   </div>
 </template>
 <script>
+import { useRouter } from 'vue-router'
 export default {
-  name: 'TopArea'
+  name: 'TopArea',
+  setup () {
+    const router = useRouter()
+    const handleBackClick = () => {
+      router.back()
+    }
+    return { handleBackClick }
+  }
 }
 </script>
 <style lang="scss" scoped>
