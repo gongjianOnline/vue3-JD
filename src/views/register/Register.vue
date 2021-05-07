@@ -63,7 +63,6 @@ const useRegisterEffect = (showToastFun) => {
         password: password,
         passwordOk: passwordOk
       })
-      console.log(response)
       if (response?.data?.errno === 0) {
         showToastFun('注册成功，自动跳转到登录页')
         setTimeout(() => {
