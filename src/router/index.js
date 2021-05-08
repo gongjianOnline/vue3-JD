@@ -1,6 +1,11 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 const routes = [
   {
+    path: '/orderList',
+    name: 'OrderList',
+    component: () => import(/* webpackChunkName:"orderList" */ '../views/orderList/OrderList.vue')
+  },
+  {
     path: '/CartList',
     name: 'CartList',
     component: () => import(/* webpackChunkName:"CartList" */ '../views/cartList/CartList.vue')
@@ -8,7 +13,7 @@ const routes = [
   {
     path: '/orderConfimation/:id',
     name: 'OrderConfimation',
-    component: () => import(/* webpackChunkName:"CartList" */ '../views/orderConfimation/OrderConfimation.vue')
+    component: () => import(/* webpackChunkName:"OrderConfimation" */ '../views/orderConfimation/OrderConfimation.vue')
   },
   {
     path: '/',

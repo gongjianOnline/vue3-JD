@@ -24,42 +24,53 @@ import { useCommonCartEffect } from '../../effects/cartEffects'
 import { post } from '../../utils/request.js'
 import { useStore } from 'vuex'
 import { ref } from 'vue'
+
+const usemakeOrderEffect = (shopName, productList, shopId) => {
+  const router = useRouter()
+  const store = useStore()
+  const handleConfirmOrder = async (isCanceled) => {
+    const products = []
+    /* eslint-disable */
+    for (let key in productList.value) {
+      const product = productList.value[key]
+      products.push({ id: product._id, num: product.count })
+    }
+    /* eslint-enable */
+    try {
+      const response = await post('/api/order', {
+        addressId: 1,
+        shopId,
+        shopName: shopName.value,
+        isCanceled,
+        products
+      })
+      if (response?.data?.errno === 0) {
+        store.commit('clearcarData', shopId)
+        router.push({ name: 'Home' })
+      }
+    } catch (e) {
+      console.log('失败信息', e)
+    }
+  }
+  return { handleConfirmOrder }
+}
+
+const useShowMaskEffect = () => {
+  const showConfirm = ref(false)
+  const handleSubmitClick = (state) => {
+    showConfirm.value = state
+  }
+  return { handleSubmitClick, showConfirm }
+}
+
 export default {
   name: 'Order',
   setup () {
     const route = useRoute()
-    const router = useRouter()
-    const store = useStore()
-    const showConfirm = ref(false)
     const shopId = route.params.id
     const { calculations, shopName, productList } = useCommonCartEffect(shopId)
-    const handleConfirmOrder = async (isCanceled) => {
-      const products = []
-      /* eslint-disable */
-      for (let key in productList.value) {
-        const product = productList.value[key]
-        products.push({ id: product._id, num: product.count })
-      }
-      /* eslint-enable */
-      try {
-        const response = await post('/api/order', {
-          addressId: 1,
-          shopId,
-          shopName: shopName.value,
-          isCanceled,
-          products
-        })
-        if (response?.data?.errno === 0) {
-          store.commit('clearcarData', shopId)
-          router.push({ name: 'Home' })
-        }
-      } catch (e) {
-        console.log('失败信息', e)
-      }
-    }
-    const handleSubmitClick = (state) => {
-      showConfirm.value = state
-    }
+    const { handleConfirmOrder } = usemakeOrderEffect(shopName, productList, shopId)
+    const { handleSubmitClick, showConfirm } = useShowMaskEffect()
     return { calculations, handleConfirmOrder, showConfirm, handleSubmitClick }
   }
 }

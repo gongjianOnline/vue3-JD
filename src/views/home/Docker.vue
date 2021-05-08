@@ -21,7 +21,7 @@ export default {
     const dockerList = [
       { icon: '#iconhome', text: '首页', to: { name: 'Home' } },
       { icon: '#iconshopping-cart', text: '购物车', to: { name: 'CartList' } },
-      { icon: '#icondingdan', text: '订单', to: { name: 'Home' } },
+      { icon: '#icondingdan', text: '订单', to: { name: 'OrderList' } },
       { icon: '#iconmy', text: '我的', to: { name: 'Home' } }
     ]
     return {
