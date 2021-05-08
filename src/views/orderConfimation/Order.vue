@@ -3,10 +3,10 @@
     <div class="order_price">
       实付金额 <b>￥{{ calculations.price }}</b>
     </div>
-    <div class="order_btn">提交订单</div>
+    <div class="order_btn" @click="()=>handleSubmitClick(true)">提交订单</div>
   </div>
-  <div class="mask">
-    <div class="mask_content">
+  <div class="mask" v-show="showConfirm" @click="()=>handleSubmitClick(false)">
+    <div class="mask_content" @click.stop>
       <h3 class="mask_content_title">确认要离开的收银台?</h3>
       <p class="mask_content_desc">请尽快完成支付,否则将被取消</p>
       <div class="mask_content_btns">
@@ -23,13 +23,14 @@ import { useRouter, useRoute } from 'vue-router'
 import { useCommonCartEffect } from '../../effects/cartEffects'
 import { post } from '../../utils/request.js'
 import { useStore } from 'vuex'
+import { ref } from 'vue'
 export default {
   name: 'Order',
   setup () {
     const route = useRoute()
     const router = useRouter()
     const store = useStore()
-
+    const showConfirm = ref(false)
     const shopId = route.params.id
     const { calculations, shopName, productList } = useCommonCartEffect(shopId)
     const handleConfirmOrder = async (isCanceled) => {
@@ -56,7 +57,10 @@ export default {
         console.log('失败信息', e)
       }
     }
-    return { calculations, handleConfirmOrder }
+    const handleSubmitClick = (state) => {
+      showConfirm.value = state
+    }
+    return { calculations, handleConfirmOrder, showConfirm, handleSubmitClick }
   }
 }
 </script>
