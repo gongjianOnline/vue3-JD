@@ -3,7 +3,7 @@
     <div class="cart_title">我的全部购物车</div>
     <div class="cartList">
       <div class="shop">
-        <div class="shop_title">沃尔玛</div>
+        <div class="shop_title">xxx</div>
         <div class="products">
           <div class="products_list">
             <div class="products_item">
@@ -25,9 +25,28 @@
 </template>
 <script>
 import Docker from '../../components/Docker'
+import { useCommonCartEffect } from '../../effects/cartEffects'
 export default {
   name: ' CartList',
-  components: { Docker }
+  components: { Docker },
+  setup () {
+    const { cartList } = useCommonCartEffect()
+    let cartList_init = []
+    /* eslint-disable */
+    for(let key in cartList) {
+      const cartList_item = {
+        name: cartList[key].shopName,
+        productList:[]
+      }
+      for(let i in cartList[key].productList){
+        cartList_item.productList.push(cartList[key].productList[i])
+      }
+      cartList_init.push(cartList_item)
+    }
+    /* eslint-enable */
+    console.log(cartList_item)
+    return {}
+  }
 }
 </script>
 <style lang="scss" scoped>
