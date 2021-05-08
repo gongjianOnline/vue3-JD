@@ -2,7 +2,7 @@
   <div class="docker">
     <span v-for="(item,index) in dockerList" :key="index"
     class="docker__item"
-    :class="{'docker__item--active':index === 0? true : false}">
+    :class="{'docker__item--active':index === currentIndex? true : false}">
       <router-link :to="item.to">
         <div>
           <svg class="icon" aria-hidden="true">
@@ -17,6 +17,7 @@
 <script>
 export default {
   name: 'Docker',
+  props: ['currentIndex'],
   setup () {
     const dockerList = [
       { icon: '#iconhome', text: '首页', to: { name: 'Home' } },
@@ -32,8 +33,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "../../style/virables.scss";
-@import "../../style/mixins.scss";
+@import "../style/virables.scss";
+@import "../style/mixins.scss";
 .docker {
   color: $content-fontColor;
   box-sizing: border-box;
