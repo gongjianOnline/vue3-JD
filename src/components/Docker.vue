@@ -1,15 +1,14 @@
 <template>
   <div class="docker">
     <span v-for="(item,index) in dockerList" :key="index"
-    class="docker__item"
-    :class="{'docker__item--active':index === currentIndex? true : false}">
+    class="docker__item">
       <router-link :to="item.to">
         <div>
-          <svg class="icon" aria-hidden="true">
+          <svg class="icon" aria-hidden="true" :class="{'docker__item_active':index === currentIndex? true : false}">
             <use :xlink:href="item.icon"></use>
           </svg>
         </div>
-        <div class="docker_title">{{item.text}}</div>
+        <div class="docker_title" :class="{'docker__item_active':index === currentIndex? true : false}">{{item.text}}</div>
       </router-link>
     </span>
   </div>
@@ -36,6 +35,8 @@ export default {
 @import "../style/virables.scss";
 @import "../style/mixins.scss";
 .docker {
+  background: #fff;
+  z-index: 1;
   color: $content-fontColor;
   box-sizing: border-box;
   padding: 0 0.18rem;
@@ -62,7 +63,7 @@ export default {
       transform: scale(0.5, 0.5);
       transform-origin: center top;
     }
-    &--active {
+    &_active {
       color: #1fa4fc;
       fill:#1fa4fc;
     }
