@@ -17,7 +17,7 @@
         </div>
       </div>
       <template v-for="item in productList" :key="item._id">
-        <div class="product_item" v-if="item.count > 0">
+        <div class="product_item">
           <div class="product_item_checked" @click="()=>changeCartItemChecked(shopId, item._id)">
             <svg class="icon" aria-hidden="true">
               <use :xlink:href="item.check == true?'#iconchecked':'#iconicons-'"></use>

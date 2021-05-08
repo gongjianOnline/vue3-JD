@@ -7,9 +7,13 @@ const setLocalCartList = (state) => {
 }
 
 const getLocalCartList = () => {
-  if (localStorage.cartList) {
-    return JSON.parse(localStorage.cartList)
-  } else {
+  try {
+    if (localStorage.cartList) {
+      return JSON.parse(localStorage.cartList)
+    } else {
+      return {}
+    }
+  } catch (e) {
     return {}
   }
 }
@@ -94,6 +98,10 @@ export default createStore({
         /* eslint-enable */
       }
       setLocalCartList(state)
+    },
+    // 清空购物车
+    clearcarData (state, shopId) {
+      state.cartList[shopId].productList = {}
     }
   },
   actions: {

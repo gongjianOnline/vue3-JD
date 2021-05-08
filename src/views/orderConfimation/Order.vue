@@ -10,28 +10,53 @@
       <h3 class="mask_content_title">确认要离开的收银台?</h3>
       <p class="mask_content_desc">请尽快完成支付,否则将被取消</p>
       <div class="mask_content_btns">
-        <div class="mask_content_btn mask_content_btn-first" @click="handleCancelOrder">取消订单</div>
-        <div class="mask_content_btn mask_content_btn-last" @click="handleConfirmOrder">确认支付</div>
+        <div class="mask_content_btn mask_content_btn-first"
+        @click="()=>handleConfirmOrder(true)">取消订单</div>
+        <div class="mask_content_btn mask_content_btn-last"
+        @click="()=>handleConfirmOrder(false)">确认支付</div>
       </div>
     </div>
   </div>
 </template>
 <script>
-import { useRoute } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { useCommonCartEffect } from '../../effects/cartEffects'
+import { post } from '../../utils/request.js'
+import { useStore } from 'vuex'
 export default {
   name: 'Order',
   setup () {
     const route = useRoute()
+    const router = useRouter()
+    const store = useStore()
+
     const shopId = route.params.id
-    const { calculations } = useCommonCartEffect(shopId)
-    const handleCancelOrder = () => {
-      alert('取消订单')
+    const { calculations, shopName, productList } = useCommonCartEffect(shopId)
+    const handleConfirmOrder = async (isCanceled) => {
+      const products = []
+      /* eslint-disable */
+      for (let key in productList.value) {
+        const product = productList.value[key]
+        products.push({ id: product._id, num: product.count })
+      }
+      /* eslint-enable */
+      try {
+        const response = await post('/api/order', {
+          addressId: 1,
+          shopId,
+          shopName: shopName.value,
+          isCanceled,
+          products
+        })
+        if (response?.data?.errno === 0) {
+          store.commit('clearcarData', shopId)
+          router.push({ name: 'Home' })
+        }
+      } catch (e) {
+        console.log('失败信息', e)
+      }
     }
-    const handleConfirmOrder = () => {
-      alert('确认支付')
-    }
-    return { calculations, handleCancelOrder, handleConfirmOrder }
+    return { calculations, handleConfirmOrder }
   }
 }
 </script>

@@ -9,8 +9,17 @@ export const useCommonCartEffect = (shopId) => {
     })
   }
   const productList = computed(() => {
-    const productList = cartList[shopId]?.productList || []
-    return productList
+    const productList = cartList[shopId]?.productList || {}
+    const notEmptyProductList = {}
+    /* eslint-disable */
+    for(let key in productList){
+      const product = productList[key]
+      if (product.count > 0) {
+        notEmptyProductList[key] = product
+      }
+    }
+    /* eslint-enable */
+    return notEmptyProductList
   })
   const shopName = computed(() => {
     const shopName = cartList[shopId]?.shopName || ''
