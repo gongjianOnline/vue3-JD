@@ -2,17 +2,17 @@
   <div class="cart">
     <div class="cart_title">我的全部购物车</div>
     <div class="cartList">
-      <div class="shop">
-        <div class="shop_title">xxx</div>
+      <div class="shop" v-for="(item,index) in cartListInit" :key="index">
+        <div class="shop_title">{{item.name}}</div>
         <div class="products">
           <div class="products_list">
-            <div class="products_item">
-              <img src="http://www.dell-lee.com/imgs/vue3/tomato.png" alt="" class="products_item_img">
+            <div class="products_item" v-for="(productListItem,productListIndex) in item.productList" :key="productListIndex">
+              <img :src="productListItem.imgUrl" alt="" class="products_item_img">
               <div class="products_item_detail">
-                <h4 class="products_item_title">番茄 250g / 份</h4>
+                <h4 class="products_item_title">{{productListItem.name}}</h4>
                 <p class="products_item_price">
-                  <span><span class="products_item_yen">￥</span>  33.6 x 1 </span>
-                  <span class="products_item_total"><span class="products_item_yen">￥</span>  33.60 </span>
+                  <span><span class="products_item_yen">￥</span>  {{productListItem.price}} x {{productListItem.count}} </span>
+                  <span class="products_item_total"><span class="products_item_yen">￥</span>  {{productListItem.price*productListItem.count}} </span>
                 </p>
               </div>
             </div>
@@ -26,26 +26,29 @@
 <script>
 import Docker from '../../components/Docker'
 import { useCommonCartEffect } from '../../effects/cartEffects'
+const carListInitEffect = (cartList) => {
+  const cartListInit = []
+  /* eslint-disable */
+  for(let key in cartList) {
+    const cartListItem = {
+      name: cartList[key].shopName,
+      productList:[]
+    }
+    for(let i in cartList[key].productList){
+      cartListItem.productList.push(cartList[key].productList[i])
+    }
+    cartListInit.push(cartListItem)
+  }
+  /* eslint-enable */
+  return { cartListInit }
+}
 export default {
   name: ' CartList',
   components: { Docker },
   setup () {
     const { cartList } = useCommonCartEffect()
-    let cartList_init = []
-    /* eslint-disable */
-    for(let key in cartList) {
-      const cartList_item = {
-        name: cartList[key].shopName,
-        productList:[]
-      }
-      for(let i in cartList[key].productList){
-        cartList_item.productList.push(cartList[key].productList[i])
-      }
-      cartList_init.push(cartList_item)
-    }
-    /* eslint-enable */
-    console.log(cartList_item)
-    return {}
+    const { cartListInit } = carListInitEffect(cartList)
+    return { cartListInit }
   }
 }
 </script>
