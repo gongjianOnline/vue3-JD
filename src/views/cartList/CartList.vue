@@ -21,7 +21,7 @@
       </div>
     </div>
   </div>
-  <Docker/>
+  <Docker :currentIndex="1"/>
 </template>
 <script>
 import Docker from '../../components/Docker'
