@@ -109,13 +109,12 @@ export default {
   display: flex;
   flex-wrap: wrap;
   margin-top: 0.16rem;
+  text-align: center;
   &_item {
     width: 20%;
     &_img {
       width: 0.4rem;
       height: 0.4rem;
-      display: block;
-      transform: translateX(20%);
     }
     &_desc {
       color: $content-fontColor;
